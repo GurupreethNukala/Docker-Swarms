@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  name_app:
+    image:
+      python_webapp:1.0.0
+    volumes:
+      - webapp_data:/tmp/logs
+    networks:
+      python_network:
+    ports:
+      - 7000:7000
+
+volumes:
+  webapp_data:
+
+networks:
+  python_network:

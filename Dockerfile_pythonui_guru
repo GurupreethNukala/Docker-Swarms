@@ -1,0 +1,20 @@
+FROM  python:2.7.17-alpine3.11
+
+RUN mkdir /application /application/templates /tmp/logs
+
+WORKDIR /application
+
+ADD app.py /application/app.py
+ADD index.html /application/templates/index.html
+ADD requirements.txt /application/requirements.txt
+
+RUN pip install virtualenv
+RUN virtualenv guruvirenv
+RUN source guruvirenv/bin/activate
+RUN pip install -r requirements.txt
+
+EXPOSE 7000
+
+ENTRYPOINT ["python2","/application/app.py"]
+
+

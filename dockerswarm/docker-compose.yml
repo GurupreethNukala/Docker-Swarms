@@ -1,0 +1,53 @@
+version: "3.7"
+services:
+  pythonwebui:
+    image: santhu304/python_webapp:1.0.0
+    deploy:
+      replicas: 4
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - webapp_data:/tmp
+    ports:
+      - 7000:7000
+    networks:
+      - python_webapp
+    configs:
+      - source: python_index
+        target: /application/templates/index.html
+  nginx:
+    image: nginx
+    deploy:
+      replicas: 3
+    volumes:
+      - nginx_logs:/var/log/nginx
+    ports:
+      - 8001:80
+    networks:
+      - nginx_network
+    secrets:
+      - htpassword
+    configs:
+      - source: test_config
+        target: /etc/nginx/test.xml
+
+volumes:
+  webapp_data:
+  nginx_logs:
+
+networks:
+  python_webapp:
+  nginx_network:
+secrets:
+  htpassword:
+    external: true
+configs:
+  test_config:
+    external:
+      name: test_conig
+  python_index:
+    external:
+      name: python_index.html
